@@ -44,7 +44,7 @@ const SignupPage = () => {
                 <div>
                   <h2 className="text-xl font-semibold">Create an account</h2>
                   <p className="text-sm opacity-70">
-                    Join Streamify and start your language learning adventure!
+                    Join BuddyLingo and start your language learning adventure!
                   </p>
                 </div>
                 <div className="space-y-3">
