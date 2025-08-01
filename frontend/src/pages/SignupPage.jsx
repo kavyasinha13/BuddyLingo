@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { ShipWheelIcon } from "lucide-react";
 import { Link } from "react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { signup } from "../lib/api.js";
+import useSignup from "../hooks/useSignup.js";
 
 const SignupPage = () => {
   const [signupData, setSignupData] = useState({
@@ -10,15 +9,8 @@ const SignupPage = () => {
     email: "",
     password: "",
   });
-  const queryClient = useQueryClient();
-  const {
-    isPending,
-    error,
-    mutate: signupMutation,
-  } = useMutation({
-    mutationFn: signup,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }), //to allot authUser as soon as the user sign up so it navigates to home page
-  });
+
+  const { isPending, error, signupMutation } = useSignup();
 
   const handleSignup = (e) => {
     e.preventDefault();
