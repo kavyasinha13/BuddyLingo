@@ -9,7 +9,7 @@ export const getRecommendedUsers = async (req, res) => {
     const recommendedUsers = await User.find({
       $and: [
         { _id: { $ne: currentUserId } }, //exclude current user
-        { $id: { $nin: currentUser.friends } }, //exclude current user's friends
+        { _id: { $nin: currentUser.friends } }, //exclude current user's friends
         { isOnboarded: true },
       ],
     });
@@ -70,8 +70,8 @@ export const sendFriendRequest = async (req, res) => {
         .json({ message: "a friend request already exists between the users" });
     }
     const friendRequest = await FriendRequest.create({
-      senderId: myId,
-      recipientId: recipientId,
+      sender: myId,
+      recipient: recipientId,
     });
 
     res.status(201).json(friendRequest);
@@ -116,7 +116,7 @@ export const acceptFriendRequest = async (req, res) => {
 
 export const getFriendRequests = async (req, res) => {
   try {
-    const incomingRequest = await FriendRequest.find({
+    const incomingRequests = await FriendRequest.find({
       recipient: req.user.id,
       status: "pending",
     }).populate(
@@ -124,12 +124,12 @@ export const getFriendRequests = async (req, res) => {
       "fullName profilePic nativeLanguage learningLanguage"
     );
 
-    const acceptedRequest = await FriendRequest.find({
+    const acceptedRequests = await FriendRequest.find({
       sender: req.user.id,
       status: "accepted",
-    }).populate("recepient", "fullName profilePic");
+    }).populate("recipient", "fullName profilePic");
 
-    res.status(200).json({ incomingRequest, acceptedRequest });
+    res.status(200).json({ incomingRequests, acceptedRequests });
   } catch (error) {
     console.log("error in fetching friend request", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -142,7 +142,7 @@ export const getOutgoingFriendRequests = async (req, res) => {
       sender: req.user.id,
       status: "pending",
     }).populate(
-      "recepient",
+      "recipient",
       "fullName profilePic nativeLanguage learningLanguage"
     );
     res.status(200).json(outgoingRequest);
